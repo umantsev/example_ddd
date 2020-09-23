@@ -1,0 +1,10 @@
+base: &base
+  adapter: postgresql
+  port: 5432
+
+development:
+  <<: *base
+  host: <%= ENV['POSTGRES_HOST'] %>
+  database: <%= ENV['POSTGRES_DB'] %>
+  username: <%= ENV['POSTGRES_USER'] %>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>

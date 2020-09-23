@@ -1,0 +1,47 @@
+version: '3.7'
+
+x-env: &db-connect
+  POSTGRES_HOST: postgresql
+  POSTGRES_PORT: 5432
+  POSTGRES_DB: example_business_logic
+  POSTGRES_USER: example_business_logic
+  POSTGRES_PASSWORD: password
+
+services:
+  postgresql:
+    tty: true
+    stdin_open: true
+    image: postgres:11.4
+    environment:
+      <<: *db-connect
+    ports:
+      - "5433:5432"
+    volumes:
+      - data:/var/lib/postgresql
+    networks:
+      - example-business-logic
+
+  example-business-logic:
+    tty: true
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    environment:
+      <<: *db-connect
+    volumes:
+      - .:/app/example_business_logic:delegated
+    ports:
+      - "9292:9292"
+    depends_on:
+      - postgresql
+    working_dir: /app/example_business_logic
+    entrypoint: .docker/entrypoint.sh
+    networks:
+      - example-business-logic
+
+volumes:
+  data:
+
+networks:
+  example-business-logic:

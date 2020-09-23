@@ -1,0 +1,96 @@
+openapi: "3.0.0"
+
+info:
+  title: Example business logic
+  description: Example business logic
+  version: "0.0.1"
+
+paths:
+  /users/{user_id}:
+    get:
+      summary: Get user by id
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Returns user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSchema"
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserNotFoundSchema"
+components:
+  schemas:
+    UserSchema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:              
+            type: object
+            properties:
+              id: 
+                type: string
+                example: "1"
+                description: User id
+              type: 
+                type: string
+                example: "user"
+              attributes:
+                type: object
+                properties:
+                  first_name:
+                    type: string
+                    example: "first_name"
+                    description: User first name
+                  last_name:
+                    type: string
+                    example: "alst_name"
+                    description: User last name
+            required:
+              - id
+              - type
+              - attributes
+      required:
+        - data
+    UserNotFoundSchema:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "404"
+                description: Error status
+              source:
+                type: object
+                properties:
+                  pointer:
+                    type: string
+                    example: "/data/id"
+                    description: Error pointer
+              title:
+                type: string
+                example: "user_not_found"
+                description: Error title
+              detail:
+                type: string
+                example: "user_not_found"
+                description: Error detail
+            required:
+                - title
+                - detail
+      required:
+        - errors
